@@ -4,12 +4,14 @@
 - the dxf generated has single line draw as it should be for mechanical interchange (this option is missing in pcbnew plot)
 
 how to launch:
-python kicadpcb2dxf.py -f kicad-board.kicad_pcb
+
+**python kicadpcb2dxf.py -f kicad-board.kicad_pcb**
 
 kicadpcb2dxf.py
   creates DXF file of selected kicad pcb board
   using r12writer from ezdxf modules included
-  this is a part of kicad StepUp tools; please refer to kicad StepUp tools 
+
+  this is a part of kicad StepUp tools; please refer to kicad StepUp tools
   for the full licence
 
  Copyright (c) 2015 Maurice easyw@katamail.com
