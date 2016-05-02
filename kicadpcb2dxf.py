@@ -9,10 +9,14 @@
 # 
 ### Copyright (c) 2015 Maurice easyw@katamail.com
 #****************************************************************************
+## done:
+# gr_line, gr_circle, gr_arc
+# add footprint support fp_line, fp_circle, fp_arc
+
+
 ## todo:
 # add text support
 # add quote support
-# add fp support
 
 # Purpose: fast & simple but restricted DXF R12 writer, with no in-memory drawing, and without dependencies to other
 # ezdxf modules. The created DXF file contains no HEADER, TABLES or BLOCKS section only the ENTITIES section is present.
@@ -25,7 +29,7 @@ __author__ = "mozman <mozman@gmx.at>"
 
 script_name="kicadpcb2dxf"
 __author_script__="easyw Maurice"
-___version___=2.5
+___version___=3.1
 
 from contextlib import contextmanager
 
@@ -879,6 +883,114 @@ txtFile.close()
 with r12writer(out_filename) as dxf:
     data=[]
     for line in content:
+        if line.strip().startswith("(at ") and not "(at (xyz" in line:
+            pos=line.split('(at ',1)[-1]
+            plcmt=pos.split(" ")
+            plcmt[1]=plcmt[1].split(')')[0] 
+            #say("getting fp offset")
+            #say (plcmt)
+            #say (plcmt[0]+" x off");say (plcmt[1]+" y off")
+        if "fp_line" in line:
+            if "Dwgs" in line:
+                layer=0; color=None; create=1
+            if "Cmts" in line:
+                layer="Cmts"; color=1; create=1
+            if "Edge" in line:
+                layer="Edge"; color=2; create=1
+            if "Eco1" in line:
+                layer="Eco1"; color=3; create=1
+            if "Eco2" in line:
+                layer="Eco2"; color=4; create=1
+            if "F.Fab" in line:
+                layer="FFab"; color=5; create=1
+            if "B.Fab" in line:
+                layer="BFab"; color=6; create=1
+            if "F.CrtYd" in line:
+                layer="FCrtYd"; color=7; create=1
+            if "B.CrtYd" in line:
+                layer="BCrtYd"; color=8; create=1
+            if create==1:
+                coords=line.split('(',1)[-1]
+                coords=coords.split(" ")
+                #say(coords[4]+";"+coords[5][:-1]+" "+layer)
+                #say(coords)
+                xs=float(coords[2])+float(plcmt[0]);ys=-float(coords[3].split(')')[0])-float(plcmt[1])
+                xe=float(coords[5])+float(plcmt[0]);ye=-float(coords[6].split(')')[0])-float(plcmt[1])
+                #xs=float(coords[4]);ys=-float(coords[5][:-1])
+                #xe=float(coords[7]);ye=-float(coords[8][:-1])
+                #say (plcmt[0]+" x off")
+                #say (str(float(plcmt[0]))+" x off")
+                #say(str(xs)+";"+str(ys)+" module")
+                #data.append(str(xs)+";"+str(ys))
+                dxf.add_line((xs,ys), (xe,ye), layer, color, linetype=None)
+        create=0
+        if "fp_circle" in line:
+            if "Dwgs" in line:
+                layer=0; color=None; create=1
+            if "Cmts" in line:
+                layer="Cmts"; color=1; create=1
+            if "Edge" in line:
+                layer="Edge"; color=2; create=1
+            if "Eco1" in line:
+                layer="Eco1"; color=3; create=1
+            if "Eco2" in line:
+                layer="Eco2"; color=4; create=1
+            if "F.Fab" in line:
+                layer="FFab"; color=5; create=1
+            if "B.Fab" in line:
+                layer="BFab"; color=6; create=1
+            if "F.CrtYd" in line:
+                layer="FCrtYd"; color=7; create=1
+            if "B.CrtYd" in line:
+                layer="BCrtYd"; color=8; create=1
+            if create==1:
+                coords=line.split('(',1)[-1]
+                coords=coords.split(" ")
+                #say(coords[4]+";"+coords[5][:-1])
+                cx=float(coords[2])+float(plcmt[0]);cy=-float(coords[3].split(')')[0])-float(plcmt[1])
+                xe=float(coords[5])+float(plcmt[0]);ye=-float(coords[6].split(')')[0])-float(plcmt[1])
+                #cx=float(coords[4]);cy=-float(coords[5][:-1])
+                #xe=float(coords[7]);ye=-float(coords[8][:-1])
+                data.append(str(cx)+";"+str(cy))
+                r=sqrt((cx-xe)**2+(cy-ye)**2)
+                dxf.add_circle((cx, cy), r, layer, color, linetype=None)
+        create=0
+        if "fp_arc" in line:
+            if "Dwgs" in line:
+                layer=0; color=None; create=1
+            if "Cmts" in line:
+                layer="Cmts"; color=1; create=1
+            if "Edge" in line:
+                layer="Edge"; color=2; create=1
+            if "Eco1" in line:
+                layer="Eco1"; color=3; create=1
+            if "Eco2" in line:
+                layer="Eco2"; color=4; create=1
+            if "F.Fab" in line:
+                layer="FFab"; color=5; create=1
+            if "B.Fab" in line:
+                layer="BFab"; color=6; create=1
+            if "F.CrtYd" in line:
+                layer="FCrtYd"; color=7; create=1
+            if "B.CrtYd" in line:
+                layer="BCrtYd"; color=8; create=1
+            if create==1:
+                coords=line.split('(',1)[-1]
+                coords=coords.split(" ")
+                #say(coords[4]+";"+coords[5][:-1])
+                cx=float(coords[2])+float(plcmt[0]);cy=-float(coords[3].split(')')[0])-float(plcmt[1])
+                xe=float(coords[5])+float(plcmt[0]);ye=-float(coords[6].split(')')[0])-float(plcmt[1])
+                #cx=float(coords[4]);cy=-float(coords[5][:-1])
+                #xe=float(coords[7]);ye=-float(coords[8][:-1])
+                arc_angle=float(coords[8].split(')')[0])
+                #arc_angle=float(coords[10][:-1])
+                data.append(str(cx)+";"+str(cy))
+                endAngle = degrees(atan2(ye-cy, xe-cx))
+                startAngle = (endAngle-arc_angle)
+                center = (cx, cy, 0) # int or float
+                r = sqrt((cx-xe)**2+(cy-ye)**2)
+                #say(str(startAngle)+";"+str(endAngle))
+                dxf.add_arc(center, r, startAngle, endAngle, layer, color, linetype=None)
         create=0
         if "gr_line" in line:
             if "Dwgs" in line:
@@ -895,6 +1007,10 @@ with r12writer(out_filename) as dxf:
                 layer="FFab"; color=5; create=1
             if "B.Fab" in line:
                 layer="BFab"; color=6; create=1
+            if "F.CrtYd" in line:
+                layer="FCrtYd"; color=7; create=1
+            if "B.CrtYd" in line:
+                layer="BCrtYd"; color=8; create=1
             if create==1:
                 coords=line.split('(',1)[-1]
                 coords=coords.split(" ")
@@ -922,6 +1038,10 @@ with r12writer(out_filename) as dxf:
                 layer="FFab"; color=5; create=1
             if "B.Fab" in line:
                 layer="BFab"; color=6; create=1
+            if "F.CrtYd" in line:
+                layer="FCrtYd"; color=7; create=1
+            if "B.CrtYd" in line:
+                layer="BCrtYd"; color=8; create=1
             if create==1:
                 coords=line.split('(',1)[-1]
                 coords=coords.split(" ")
@@ -949,6 +1069,10 @@ with r12writer(out_filename) as dxf:
                 layer="FFab"; color=5; create=1
             if "B.Fab" in line:
                 layer="BFab"; color=6; create=1
+            if "F.CrtYd" in line:
+                layer="FCrtYd"; color=7; create=1
+            if "B.CrtYd" in line:
+                layer="BCrtYd"; color=8; create=1
             if create==1:
                 coords=line.split('(',1)[-1]
                 coords=coords.split(" ")

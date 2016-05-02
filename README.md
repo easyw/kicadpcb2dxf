@@ -1,6 +1,6 @@
 # kicadpcb2dxf
 **dxf exporter for mechanical layers of a kicad_pcb board**
-- "Dwgs", "Cmts", "Edge", "Eco1", "Eco2", "F.Fab", "B.Fab"
+- "Dwgs", "Cmts", "Edge", "Eco1", "Eco2", "F.Fab", "B.Fab", "F.CrtYd", "B.CrtYd"
 - the dxf generated has single line draw as it should be for mechanical interchange (this option is missing in pcbnew plot)
 
 how to launch:
@@ -18,7 +18,10 @@ kicadpcb2dxf.py
  Copyright (C) 2016, Manfred Moitzi with MIT License
  dxf_parser="r12writer from ezdxf 0.7.6"
 
+done:
+- [x] added line, circle, arc primitives
+- [x] added footprint support
+ 
 todo:
 - [ ] add text support
 - [ ] add quote support
-- [ ] add fp support
