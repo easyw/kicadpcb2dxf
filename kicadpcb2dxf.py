@@ -29,7 +29,7 @@ __author__ = "mozman <mozman@gmx.at>"
 
 script_name="kicadpcb2dxf"
 __author_script__="easyw Maurice"
-___version___=3.2
+___version___=3.3
 
 from contextlib import contextmanager
 
@@ -986,8 +986,14 @@ with r12writer(out_filename) as dxf:
                 arc_angle=float(coords[8].split(')')[0])
                 #arc_angle=float(coords[10][:-1])
                 data.append(str(cx)+";"+str(cy))
-                endAngle = degrees(atan2(ye-cy, xe-cx))
-                startAngle = (endAngle-arc_angle)
+                #endAngle = degrees(atan2(ye-cy, xe-cx))
+                #startAngle = (endAngle-arc_angle)
+                if arc_angle<0:
+                    startAngle = degrees(atan2(ye-cy, xe-cx))
+                    endAngle = (startAngle-arc_angle)
+                else:
+                    endAngle = degrees(atan2(ye-cy, xe-cx))
+                    startAngle = (endAngle-arc_angle)
                 center = (cx, cy, 0) # int or float
                 r = sqrt((cx-xe)**2+(cy-ye)**2)
                 #say(str(startAngle)+";"+str(endAngle))
@@ -1086,8 +1092,14 @@ with r12writer(out_filename) as dxf:
                 #say(arc_angle)
                 #arc_angle=float(coords[10][:-1])
                 data.append(str(cx)+";"+str(cy))
-                endAngle = degrees(atan2(ye-cy, xe-cx))
-                startAngle = (endAngle-arc_angle)
+                #endAngle = degrees(atan2(ye-cy, xe-cx))
+                #startAngle = (endAngle-arc_angle)
+                if arc_angle<0:
+                    startAngle = degrees(atan2(ye-cy, xe-cx))
+                    endAngle = (startAngle-arc_angle)
+                else:
+                    endAngle = degrees(atan2(ye-cy, xe-cx))
+                    startAngle = (endAngle-arc_angle)
                 center = (cx, cy, 0) # int or float
                 r = sqrt((cx-xe)**2+(cy-ye)**2)
                 #say(str(startAngle)+";"+str(endAngle))

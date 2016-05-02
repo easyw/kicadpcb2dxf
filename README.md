@@ -21,8 +21,9 @@ kicadpcb2dxf.py
 done:
 - [x] added line, circle, arc primitives
 - [x] added footprint support
- 
+- [x] fixed negative arc case 
+
 todo:
 - [ ] add text support
 - [ ] add quote support
-- [ ] fix some arc case
+
