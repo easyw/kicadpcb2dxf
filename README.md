@@ -22,8 +22,8 @@ done:
 - [x] added line, circle, arc primitives
 - [x] added footprint support
 - [x] fixed negative arc case 
+- [x] added text support (mirror & alignement not supported)
 
 todo:
-- [ ] add text support
 - [ ] add quote support
 

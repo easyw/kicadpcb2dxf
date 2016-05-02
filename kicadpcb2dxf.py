@@ -12,10 +12,10 @@
 ## done:
 # gr_line, gr_circle, gr_arc
 # add footprint support fp_line, fp_circle, fp_arc
+# add text support (mirror & alignement not supported)
 
 
 ## todo:
-# add text support
 # add quote support
 
 # Purpose: fast & simple but restricted DXF R12 writer, with no in-memory drawing, and without dependencies to other
@@ -29,7 +29,7 @@ __author__ = "mozman <mozman@gmx.at>"
 
 script_name="kicadpcb2dxf"
 __author_script__="easyw Maurice"
-___version___=3.3
+___version___=3.4
 
 from contextlib import contextmanager
 
@@ -882,7 +882,7 @@ txtFile.close()
 #say(content)
 
 with r12writer(out_filename) as dxf:
-    data=[]
+    data=[];createTxt=0
     for line in content:
         if line.strip().startswith("(at ") and not "(at (xyz" in line:
             pos=line.split('(at ',1)[-1]
@@ -891,6 +891,7 @@ with r12writer(out_filename) as dxf:
             #say("getting fp offset")
             #say (plcmt)
             #say (plcmt[0]+" x off");say (plcmt[1]+" y off")
+        create=0
         if "fp_line" in line:
             if "Dwgs" in line:
                 layer=0; color=None; create=1
@@ -1104,6 +1105,51 @@ with r12writer(out_filename) as dxf:
                 r = sqrt((cx-xe)**2+(cy-ye)**2)
                 #say(str(startAngle)+";"+str(endAngle))
                 dxf.add_arc(center, r, startAngle, endAngle, layer, color, linetype=None)
+        #createTxt=0
+        if "gr_text" in line:
+            if "Dwgs" in line:
+                layer=0; color=None; createTxt=1
+            if "Cmts" in line:
+                layer="Cmts"; color=1; createTxt=1
+            if "Edge" in line:
+                layer="Edge"; color=2; createTxt=1
+            if "Eco1" in line:
+                layer="Eco1"; color=3; createTxt=1
+            if "Eco2" in line:
+                layer="Eco2"; color=4; createTxt=1
+            if "F.Fab" in line:
+                layer="FFab"; color=5; createTxt=1
+            if "B.Fab" in line:
+                layer="BFab"; color=6; createTxt=1
+            if "F.CrtYd" in line:
+                layer="FCrtYd"; color=7; createTxt=1
+            if "B.CrtYd" in line:
+                layer="BCrtYd"; color=8; createTxt=1
+            if createTxt==1:        
+                #(gr_text Rotate (at 325.374 52.705 15) (layer Eco2.User)
+                line=line.strip().split("(gr_text ")[1].split("(at")
+                text=line[0].replace("\"", "").replace("\'", "")
+                #say(line[1].split(" "))
+                px=line[1].split(" ")[1];py=line[1].split(" ")[2].replace(")", "")
+                if "layer" not in line[1].split(" ")[3]:
+                    rot=line[1].split(" ")[3].replace(")", "")
+                else:
+                    rot="0"
+                #say(line);say(text);say(px+";"+py+";"+rot)
+        if "(effects" in line and createTxt==1:
+            createTxt=0
+            size=(line.split("(size ")[1].split(" "))
+            #say (line)
+            #sizeX=int(round(float(size[0])))
+            #sizeY=int(round(float(size[1].replace(")", ""))))
+            sizeX=(float(size[0]))
+            sizeY=(float(size[1].replace(")", "")))
+            #say(sizeX);say(sizeY)
+            dxf.add_text(text,(float(px),-float(py)),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
+        # def add_text(self, text, insert=(0, 0), height=1., width=1., align="LEFT", rotation=0., oblique=0., style='STANDARD',
+        #          layer="0", color=None):
+        # # text style is always STANDARD without a TABLES section
+    
     #say (data)
     
 say("--> "+out_filename+" written")
