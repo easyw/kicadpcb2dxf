@@ -29,7 +29,7 @@ __author__ = "mozman <mozman@gmx.at>"
 
 script_name="kicadpcb2dxf"
 __author_script__="easyw Maurice"
-___version___=3.1
+___version___=3.2
 
 from contextlib import contextmanager
 
@@ -859,6 +859,7 @@ if args['file'] == None:
     #path, fname = os.path.splitext(os.path.abspath(filename))
     #say(fname)
     say ("...\n   launch:\n          kicadpcb3dxf -f pcbfile_name.kicad_pcb")
+    say("version "+str(___version___))
     quit()
 else:
     filename=args['file']
@@ -1082,6 +1083,7 @@ with r12writer(out_filename) as dxf:
                 #cx=float(coords[4]);cy=-float(coords[5][:-1])
                 #xe=float(coords[7]);ye=-float(coords[8][:-1])
                 arc_angle=float(coords[8].split(')')[0])
+                #say(arc_angle)
                 #arc_angle=float(coords[10][:-1])
                 data.append(str(cx)+";"+str(cy))
                 endAngle = degrees(atan2(ye-cy, xe-cx))

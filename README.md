@@ -25,3 +25,4 @@ done:
 todo:
 - [ ] add text support
 - [ ] add quote support
+- [ ] fix some arc case
