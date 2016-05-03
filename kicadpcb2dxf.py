@@ -885,7 +885,7 @@ txtFile.close()
 quote_layer=False
 
 with r12writer(out_filename) as dxf:
-    data=[];createTxt=0;quote_color=127;dimesion=0
+    data=[];createTxt=0;quote_color=127;dimension=0
     for line in content:
         if line.strip().startswith("(at ") and not "(at (xyz" in line:
             pos=line.split('(at ',1)[-1]
