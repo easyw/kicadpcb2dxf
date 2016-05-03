@@ -13,7 +13,7 @@
 # gr_line, gr_circle, gr_arc
 # add footprint support fp_line, fp_circle, fp_arc
 # add text support (mirror & alignement not supported)
-
+# add multiline text support
 
 ## todo:
 # add quote support
@@ -29,7 +29,7 @@ __author__ = "mozman <mozman@gmx.at>"
 
 script_name="kicadpcb2dxf"
 __author_script__="easyw Maurice"
-___version___=3.4
+___version___=3.5
 
 from contextlib import contextmanager
 
@@ -1145,7 +1145,15 @@ with r12writer(out_filename) as dxf:
             sizeX=(float(size[0]))
             sizeY=(float(size[1].replace(")", "")))
             #say(sizeX);say(sizeY)
-            dxf.add_text(text,(float(px),-float(py)),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
+            text1=text.split("\\n")
+            #say (text1)
+            #say (len(text1))
+            posY=-float(py)
+            # multiline support
+            for txt in text1:
+                dxf.add_text(txt,(float(px),posY),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
+                posY=posY-sizeY*1.3
+            # dxf.add_text(text,(float(px),-float(py)),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
         # def add_text(self, text, insert=(0, 0), height=1., width=1., align="LEFT", rotation=0., oblique=0., style='STANDARD',
         #          layer="0", color=None):
         # # text style is always STANDARD without a TABLES section

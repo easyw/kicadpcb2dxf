@@ -23,6 +23,7 @@ done:
 - [x] added footprint support
 - [x] fixed negative arc case 
 - [x] added text support (mirror & alignement not supported)
+- [x] added multiline text
 
 todo:
 - [ ] add quote support
