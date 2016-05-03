@@ -29,7 +29,7 @@ __author__ = "mozman <mozman@gmx.at>"
 
 script_name="kicadpcb2dxf"
 __author_script__="easyw Maurice"
-___version___=3.6
+___version___=3.7
 
 from contextlib import contextmanager
 
@@ -1158,7 +1158,7 @@ with r12writer(out_filename) as dxf:
                 layer="Quote"
                 dimension=0
             for txt in text1:
-                dxf.add_text(txt,(float(px),posY),sizeX,sizeY,"MIDDLE_CENTER",float(rot),0.,'STANDARD',layer,color)
+                dxf.add_text(txt,(float(px),posY),sizeX,sizeY,"MIDDLE_CENTER",float(rot),0.,'SIMPLEX',layer,color)
                 posY=posY-sizeY*1.3
             # dxf.add_text(text,(float(px),-float(py)),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
         if "(dimension" in line:
