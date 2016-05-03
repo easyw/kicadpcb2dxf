@@ -883,6 +883,7 @@ txtFile.close()
 
 # quote_layer True to move all quote on special layer
 quote_layer=False
+align="LEFT"
 
 with r12writer(out_filename) as dxf:
     data=[];createTxt=0;quote_color=127;dimension=0
@@ -1158,11 +1159,12 @@ with r12writer(out_filename) as dxf:
                 layer="Quote"
                 dimension=0
             for txt in text1:
-                dxf.add_text(txt,(float(px),posY),sizeX,sizeY,"MIDDLE_CENTER",float(rot),0.,'SIMPLEX',layer,color)
+                dxf.add_text(txt,(float(px),posY),sizeX,sizeY,align,float(rot),0.,'SIMPLEX',layer,color)
                 posY=posY-sizeY*1.3
+            align="LEFT"
             # dxf.add_text(text,(float(px),-float(py)),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
         if "(dimension" in line:
-            dimension=1
+            dimension=1;align="MIDDLE_CENTER"
         if "(feature" in line or "(crossbar" in line or "(arrow" in line:
             dimension_bar=line.split("(xy")
             #say(dimension_bar)
