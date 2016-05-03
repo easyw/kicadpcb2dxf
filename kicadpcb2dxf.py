@@ -29,7 +29,7 @@ __author__ = "mozman <mozman@gmx.at>"
 
 script_name="kicadpcb2dxf"
 __author_script__="easyw Maurice"
-___version___=3.5
+___version___=3.6
 
 from contextlib import contextmanager
 
@@ -881,8 +881,11 @@ content.append(" ")
 txtFile.close()
 #say(content)
 
+# quote_layer True to move all quote on special layer
+quote_layer=False
+
 with r12writer(out_filename) as dxf:
-    data=[];createTxt=0
+    data=[];createTxt=0;quote_color=127;dimesion=0
     for line in content:
         if line.strip().startswith("(at ") and not "(at (xyz" in line:
             pos=line.split('(at ',1)[-1]
@@ -1150,14 +1153,25 @@ with r12writer(out_filename) as dxf:
             #say (len(text1))
             posY=-float(py)
             # multiline support
+            if dimension==1 and quote_layer:
+                color=quote_color
+                layer="Quote"
+                dimension=0
             for txt in text1:
-                dxf.add_text(txt,(float(px),posY),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
+                dxf.add_text(txt,(float(px),posY),sizeX,sizeY,"MIDDLE_CENTER",float(rot),0.,'STANDARD',layer,color)
                 posY=posY-sizeY*1.3
             # dxf.add_text(text,(float(px),-float(py)),sizeX,sizeY,"LEFT",float(rot),0.,'STANDARD',layer,color)
-        # def add_text(self, text, insert=(0, 0), height=1., width=1., align="LEFT", rotation=0., oblique=0., style='STANDARD',
-        #          layer="0", color=None):
-        # # text style is always STANDARD without a TABLES section
-    
+        if "(dimension" in line:
+            dimension=1
+        if "(feature" in line or "(crossbar" in line or "(arrow" in line:
+            dimension_bar=line.split("(xy")
+            #say(dimension_bar)
+            dsx=float(dimension_bar[1].split(" ")[1])
+            dsy=float(dimension_bar[1].split(" ")[2].replace(")",""))
+            dex=float(dimension_bar[2].split(" ")[1])
+            dey=float(dimension_bar[2].split(" ")[2].replace(")",""))
+            #say(str(dsx)+";"+str(dsy)+";;"+str(dex)+";"+str(dey))
+            dxf.add_line((dsx,-dsy), (dex,-dey), layer, color, linetype=None)
     #say (data)
     
 say("--> "+out_filename+" written")
