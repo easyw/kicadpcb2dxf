@@ -827,9 +827,6 @@ ENDSEC
 ###################################################################
 ##real python code easyw
 
-import sys  
-reload(sys)  
-sys.setdefaultencoding('utf8')  #to accept utf8 chars
 import re, os
 from math import sqrt, atan2, degrees
 import argparse
@@ -845,7 +842,7 @@ args = vars(parser.parse_args())
 def say(msg):
     #FreeCAD.Console.PrintMessage(msg)
     #FreeCAD.Console.PrintMessage('\n')
-    print msg
+    print(msg)
 
 #say(len(args))
 #if len(args) == 1:
